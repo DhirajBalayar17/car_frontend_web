@@ -21,6 +21,7 @@ import EditProfile from "./Pages/EditProfile/EditProfile";
 import MyBookings from "./Pages/MyBooking/MyBookings";
 
 // Import Admin Pages
+import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import AdminPanel from "./Pages/Admin/AdminPanel";
 import ManageUsers from "./Pages/Admin/ManageUsers";
 import ManageBookings from "./Pages/Admin/ManageBookings";
@@ -28,6 +29,10 @@ import ManageCars from "./Pages/Admin/ManageCars";
 import AddVehicle from "./Pages/Admin/AddVehicle";
 import EditVehicle from "./Pages/Admin/EditVehicle";
 import Sidebar from "./components/Sidebar/Sidebar";
+
+// ✅ Corrected Import Paths for Forget/Reset Password
+import ForgetPassword from "./Pages/ForgetPassword/ForgetPassword";
+import ResetPassword from "./Pages/ForgetPassword/ResetPassword";
 
 const Home = () => {
   return (
@@ -69,7 +74,7 @@ const AdminRoute = ({ element }) => {
 // ✅ **Layout Component to Hide Navbar for Admin Pages**
 const Layout = ({ children, theme, setTheme }) => {
   const location = useLocation();
-  const isAdminPage = location.pathname.startsWith("/admin"); // Hide Navbar for admin pages
+  const isAdminPage = location.pathname.startsWith("/admin");
 
   return (
     <div className="bg-white dark:bg-black text-gray-900 dark:text-white min-h-screen">
@@ -114,6 +119,10 @@ const App = () => {
           <Route path="/cars" element={<CarList />} />
           <Route path="/car/:id" element={<CarDetails />} />
 
+          {/* 🔹 Forgot & Reset Password Routes (✅ Fixed Issue) */}
+          <Route path="/forgot-password" element={<ForgetPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+
           {/* 🔹 Protected Routes (Users) */}
           <Route path="/booking/:id" element={<ProtectedRoute element={<BookingForm />} />} />
           <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
@@ -121,7 +130,7 @@ const App = () => {
           <Route path="/my-bookings" element={<ProtectedRoute element={<MyBookings />} />} />
 
           {/* 🔹 Admin Routes (Sidebar Included) */}
-          <Route path="/admin" element={<AdminRoute element={<AdminPanel />} />} />
+          <Route path="/admin" element={<AdminRoute element={<AdminDashboard />} />} />
           <Route path="/admin/manage-users" element={<AdminRoute element={<ManageUsers />} />} />
           <Route path="/admin/manage-bookings" element={<AdminRoute element={<ManageBookings />} />} />
           <Route path="/admin/manage-cars" element={<AdminRoute element={<ManageCars />} />} />

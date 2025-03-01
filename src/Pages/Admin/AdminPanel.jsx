@@ -92,6 +92,9 @@
 // };
 
 // export default AdminPanel;
+
+
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FiEdit, FiTrash } from "react-icons/fi";
@@ -107,12 +110,30 @@ const AdminPanel = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/api/users/");
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                console.error("❌ No token found. Redirecting to login.");
+                alert("Unauthorized! Please log in again.");
+                window.location.href = "/login";
+                return;
+            }
+
+            console.log("🔍 Token being sent:", token);
+
+            const response = await axios.get("http://localhost:3000/api/users/", {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+            });
+
+            console.log("✅ Users API Response:", response.data);
             setUsers(response.data);
-            setLoading(false);
         } catch (error) {
-            console.error("❌ Error fetching users:", error.message);
-            setError("Failed to load users.");
+            console.error("❌ Error fetching users:", error.response?.data || error.message);
+            setError("Failed to load users. Please check the console.");
+        } finally {
             setLoading(false);
         }
     };
@@ -121,10 +142,18 @@ const AdminPanel = () => {
         if (!window.confirm("Are you sure you want to delete this user?")) return;
 
         try {
-            await axios.delete(`http://localhost:3000/api/users/${userId}`);
+            const token = localStorage.getItem("token");
+
+            await axios.delete(`http://localhost:3000/api/users/${userId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+            });
+
             setUsers(users.filter((user) => user._id !== userId));
+            console.log(`✅ User with ID ${userId} deleted successfully.`);
         } catch (error) {
-            console.error("❌ Error deleting user:", error.message);
+            console.error("❌ Error deleting user:", error.response?.data || error.message);
             alert("Failed to delete user. Please try again.");
         }
     };
@@ -134,7 +163,7 @@ const AdminPanel = () => {
             <h1 className="text-3xl font-semibold text-gray-800 mb-6">Manage Users</h1>
 
             {loading ? (
-                <p className="text-center text-gray-600">Loading users...</p>
+                <p className="text-center text-gray-600">🔄 Loading users...</p>
             ) : error ? (
                 <p className="text-center text-red-600">{error}</p>
             ) : (

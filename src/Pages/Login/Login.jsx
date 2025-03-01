@@ -82,7 +82,7 @@ const Login = () => {
           </div>
 
           {/* Password Input */}
-          <div className="mb-4">
+          <div className="mb-2">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password:</label>
             <div className="relative">
               <AiOutlineLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={22} />
@@ -96,12 +96,24 @@ const Login = () => {
               />
               <button
                 type="button"
+                aria-label={showPassword ? "Hide password" : "Show password"}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                onClick={() => setShowPassword((prev) => !prev)}
+                onClick={() => setShowPassword(prev => !prev)}
               >
                 {showPassword ? <AiOutlineEye size={22} /> : <AiOutlineEyeInvisible size={22} />}
               </button>
             </div>
+          </div>
+
+          {/* Forgot Password */}
+          <div className="mb-4 text-right">
+            <button
+              type="button"
+              className="text-blue-500 hover:underline text-sm"
+              onClick={() => navigate("/forgot-password")} // ✅ Redirect to Forgot Password
+            >
+              Forgot Password?
+            </button>
           </div>
 
           {/* Login Button */}
